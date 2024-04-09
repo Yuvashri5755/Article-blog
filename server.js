@@ -1,0 +1,18 @@
+const express=require('express')
+const articleRouter = require("./routes/articles")
+const article = require('./models/article')
+const mongoose=require('mongoose')
+const methodOverride=require('method-override')
+const app=express()
+mongoose.connect('mongodb://localhost/webblogDatabase')
+app.set("views","./view")
+app.set('view engine','ejs')
+app.use(express.urlencoded({extended:false}))
+app.use(methodOverride('_method'))
+app.get('/',async(req,res)=>{
+    const articles=await article.find().sort({createdAt:'desc'})
+    res.render('artices/index',{articles:articles})
+
+})
+app.use('/articles',articleRouter)
+app.listen(3000)
